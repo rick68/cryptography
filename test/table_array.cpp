@@ -64,7 +64,7 @@ void test()
 
 ATHENA_CIPHERS_TEST_SUITE
 (
-  "alphabet",
+  "table_array",
   ATHENA_CIPHERS_TEST_CASE(table_array_compile::test)
   ATHENA_CIPHERS_TEST_CASE(table_array_runtime::test)
 )

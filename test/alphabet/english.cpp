@@ -20,6 +20,6 @@
 
 ATHENA_CIPHERS_TEST_SUITE
 (
-  "caesar",
+  "english",
   ATHENA_CIPHERS_TEST_CASE(null_test)
 )
