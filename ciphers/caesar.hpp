@@ -42,8 +42,8 @@ struct caesar
   BOOST_STATIC_CONSTANT(std::size_t, length = detail::length<Alphabet>::value);
 
   typedef Alphabet alphabet_type;
-  typedef typename detail::rot<alphabet_type, N>::type rot_n;
-  typedef table_array<rot_n> array_type;
+  typedef typename detail::rot<alphabet_type, N>::type sequence_type;
+  typedef table_array<sequence_type> array_type;
 
   inline static const char_type encode(char_type c)
   {
