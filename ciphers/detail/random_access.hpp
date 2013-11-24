@@ -32,8 +32,8 @@ namespace ciphers {
 namespace detail {
 
 #define ATHENA_CIPHERS_DETAIL_RANDOM_ACCESS(seq, i) \
-    boost::mpl::at_c<seq, i>::type::value \
-    /**/
+  boost::mpl::at_c<seq, i>::type::value \
+  /**/
 
 template <typename Sequence, std::size_t I>
 struct random_access : range_check<Sequence, I>
@@ -44,8 +44,8 @@ struct random_access : range_check<Sequence, I>
 };
 
 #define ATHENA_CIPHERS_DETAIL_RANDOM_ACCESS_PP_REPEAT_MACRO(z, n, text) \
-    ATHENA_CIPHERS_DETAIL_RANDOM_ACCESS(text, n) BOOST_PP_COMMA() \
-    /**/
+  ATHENA_CIPHERS_DETAIL_RANDOM_ACCESS(text, n) BOOST_PP_COMMA() \
+  /**/
 
 } // detail
 } // ciphers

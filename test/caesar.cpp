@@ -37,20 +37,20 @@
 // caesar compile and link correctly. Runtime failures are ignored.
 
 #define UNIT_TEST_CAESAR_COMPILE_MACRO(z, n, text) \
-    UNIT_TEST_CAESAR_TYPEDEF_MACRO_D(uppercase, n) \
-    UNIT_TEST_CAESAR_TYPEDEF_MACRO_D(lowercase, n) \
-    UNIT_TEST_CAESAR_INSTANCE_MACRO_D(uppercase, n) \
-    UNIT_TEST_CAESAR_INSTANCE_MACRO_D(lowercase, n) \
-    /**/
+  UNIT_TEST_CAESAR_TYPEDEF_MACRO_D(uppercase, n) \
+  UNIT_TEST_CAESAR_TYPEDEF_MACRO_D(lowercase, n) \
+  UNIT_TEST_CAESAR_INSTANCE_MACRO_D(uppercase, n) \
+  UNIT_TEST_CAESAR_INSTANCE_MACRO_D(lowercase, n) \
+  /**/
 #define UNIT_TEST_CAESAR_TYPEDEF_MACRO_D(text, n) \
-    typedef caesar<text, n> \
-	    BOOST_PP_CAT(BOOST_PP_CAT(caesar, n), BOOST_PP_CAT(text, _t)); \
-    /**/
+  typedef caesar<text, n> \
+      BOOST_PP_CAT(BOOST_PP_CAT(caesar, n), BOOST_PP_CAT(text, _t)); \
+  /**/
 
 #define UNIT_TEST_CAESAR_INSTANCE_MACRO_D(text, n) \
-    BOOST_PP_CAT(BOOST_PP_CAT(caesar, n), BOOST_PP_CAT(text, _t)) \
-	BOOST_PP_CAT(BOOST_PP_CAT(caesar, n), text); \
-    /**/
+  BOOST_PP_CAT(BOOST_PP_CAT(caesar, n), BOOST_PP_CAT(text, _t)) \
+      BOOST_PP_CAT(BOOST_PP_CAT(caesar, n), text); \
+  /**/
 
 namespace caesar_compile {
 
@@ -74,27 +74,27 @@ void test()
 // necessary postconditions.
 
 #define UNIT_TEST_CAESAR_RUNTIME_MACRO(z, n, text) \
-    UNIT_TEST_CAESAR_TYPEDEF_MACRO_D(uppercase, n) \
-    UNIT_TEST_CAESAR_TYPEDEF_MACRO_D(lowercase, n) \
-    UNIT_TEST_CAESAR_RUNTIME_ENCODE_MACRO(uppercase, n) \
-    UNIT_TEST_CAESAR_RUNTIME_DECODE_MACRO(uppercase, n) \
-    ATHENA_CIPHERS_CHECK(str == tmp); \
-    UNIT_TEST_CAESAR_RUNTIME_ENCODE_MACRO(lowercase, n) \
-    UNIT_TEST_CAESAR_RUNTIME_DECODE_MACRO(lowercase, n) \
-    ATHENA_CIPHERS_CHECK(str == tmp); \
-    /**/
+  UNIT_TEST_CAESAR_TYPEDEF_MACRO_D(uppercase, n) \
+  UNIT_TEST_CAESAR_TYPEDEF_MACRO_D(lowercase, n) \
+  UNIT_TEST_CAESAR_RUNTIME_ENCODE_MACRO(uppercase, n) \
+  UNIT_TEST_CAESAR_RUNTIME_DECODE_MACRO(uppercase, n) \
+  ATHENA_CIPHERS_CHECK(str == tmp); \
+  UNIT_TEST_CAESAR_RUNTIME_ENCODE_MACRO(lowercase, n) \
+  UNIT_TEST_CAESAR_RUNTIME_DECODE_MACRO(lowercase, n) \
+  ATHENA_CIPHERS_CHECK(str == tmp); \
+  /**/
 
 #define UNIT_TEST_CAESAR_RUNTIME_ENCODE_MACRO(text, n) \
-    for (std::size_t i = 0; i < str.size(); ++i) \
-      tmp[i] = BOOST_PP_CAT \
-          (BOOST_PP_CAT(caesar, n), BOOST_PP_CAT(text, _t))::encode(str[i]); \
-    /**/
+  for (std::size_t i = 0; i < str.size(); ++i) \
+    tmp[i] = BOOST_PP_CAT \
+        (BOOST_PP_CAT(caesar, n), BOOST_PP_CAT(text, _t))::encode(str[i]); \
+  /**/
 
 #define UNIT_TEST_CAESAR_RUNTIME_DECODE_MACRO(text, n) \
-    for (std::size_t i = 0; i < str.size(); ++i) \
-      tmp[i] = BOOST_PP_CAT \
-          (BOOST_PP_CAT(caesar, n), BOOST_PP_CAT(text, _t))::decode(tmp[i]); \
-    /**/
+  for (std::size_t i = 0; i < str.size(); ++i) \
+    tmp[i] = BOOST_PP_CAT \
+        (BOOST_PP_CAT(caesar, n), BOOST_PP_CAT(text, _t))::decode(tmp[i]); \
+  /**/
 
 namespace caesar_runtime {
 

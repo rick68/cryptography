@@ -25,8 +25,8 @@ namespace ciphers {
 namespace detail {
 
 #define ATHENA_CIPHERS_DETAIL_LENGTH_CHECK_ASSERT(seq, n) \
-    BOOST_STATIC_ASSERT(length<seq>::value == n); \
-    /**/
+  BOOST_STATIC_ASSERT(length<seq>::value == n); \
+  /**/
 
 template <typename Sequence, std::size_t N>
 struct length_check

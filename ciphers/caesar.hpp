@@ -65,9 +65,9 @@ struct caesar
 };
 
 #define ATHENA_CIPHERS_CAESAR_ROT_TYPEDEF_PP_REPERAT_MACRO(z, n, text) \
-    template <typename Alphabet> struct BOOST_PP_CAT(rot, n) \
-         : caesar<Alphabet, n> {}; \
-    /**/
+  template <typename Alphabet> struct BOOST_PP_CAT(rot, n) \
+      : caesar<Alphabet, n> {}; \
+  /**/
 
 BOOST_PP_REPEAT_FROM_TO(
     0,

@@ -25,8 +25,8 @@ namespace ciphers {
 namespace detail {
 
 #define ATHENA_CIPHERS_DETAIL_RANGE_CHECK_ASSERT(seq, i) \
-    BOOST_STATIC_ASSERT(i >= 0 && i < length<seq>::value); \
-    /**/
+  BOOST_STATIC_ASSERT(i >= 0 && i < length<seq>::value); \
+  /**/
 
 template <typename Sequence, std::size_t I>
 struct range_check
