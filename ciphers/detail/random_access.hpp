@@ -39,7 +39,7 @@ template <typename Sequence, std::size_t I>
 struct random_access : range_check<Sequence, I>
 {
   BOOST_STATIC_CONSTANT(
-      bool,
+      std::size_t,
       value = ATHENA_CIPHERS_DETAIL_RANDOM_ACCESS(Sequence, I));
 };
 
