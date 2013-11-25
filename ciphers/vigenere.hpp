@@ -52,13 +52,13 @@ struct vigenere_table
 };
 
 template <
-    typename Alphabet,
-    typename String = std::basic_string<
-        char_type,
-        std::char_traits<char_type>,
-        std::allocator<char_type>
-    >
->
+    typename Alphabet
+  , typename String = std::basic_string<
+        char_type
+      , std::char_traits<char_type>
+      , std::allocator<char_type>
+      >
+  >
 struct vigenere
 {
   BOOST_STATIC_CONSTANT(std::size_t, first = detail::first<Alphabet>::value);

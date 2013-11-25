@@ -37,14 +37,15 @@ struct left_rotate
     : length_check<Sequence, alphabet_number>
 {
   typedef ATHENA_CIPHERS_ALPHABET_SEQUENCE_TYPE<
-      char_type,
-      BOOST_PP_REPEAT_FROM_TO(
-          1,
-          ATHENA_CIPHERS_ALPHABET_NUMBER,
-          ATHENA_CIPHERS_DETAIL_RANDOM_ACCESS_PP_REPEAT_MACRO,
-          Sequence)
-          ATHENA_CIPHERS_DETAIL_RANDOM_ACCESS(Sequence, 0)
-      > type;
+      char_type
+    , BOOST_PP_REPEAT_FROM_TO(
+          1
+        , ATHENA_CIPHERS_ALPHABET_NUMBER
+        , ATHENA_CIPHERS_DETAIL_RANDOM_ACCESS_PP_REPEAT_MACRO
+        , Sequence
+        )
+      ATHENA_CIPHERS_DETAIL_RANDOM_ACCESS(Sequence, 0)
+    > type;
 };
 
 // ROTn "rotate by n places"
@@ -54,8 +55,9 @@ struct rot : range_check<Alphabet, N>
   BOOST_STATIC_CONSTANT(std::size_t, value = N);
   typedef Alphabet alphabet_type;
   typedef typename rot<
-      typename detail::left_rotate<alphabet_type>::type,
-      N - 1>::type type;
+      typename detail::left_rotate<alphabet_type>::type
+    , N - 1
+    >::type type;
 };
 
 template <typename Alphabet>
