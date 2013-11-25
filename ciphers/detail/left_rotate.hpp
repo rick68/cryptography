@@ -34,10 +34,10 @@ namespace detail {
 
 template <typename Sequence>
 struct left_rotate
-    : length_check<Sequence, ATHENA_CIPHERS_ALPHABET_NUMBER>
+    : length_check<Sequence, alphabet_number>
 {
   typedef ATHENA_CIPHERS_ALPHABET_SEQUENCE_TYPE<
-      ATHENA_CIPHERS_ALPHABET_CHAR_TYPE,
+      char_type,
       BOOST_PP_REPEAT_FROM_TO(
           1,
           ATHENA_CIPHERS_ALPHABET_NUMBER,

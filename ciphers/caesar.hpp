@@ -25,9 +25,9 @@
 #include "detail/config.hpp"
 #include "detail/range_check.hpp"
 #include "detail/left_rotate.hpp"
-#include "detail/length.hpp"
 #include "detail/first.hpp"
 #include "detail/last.hpp"
+#include "detail/length.hpp"
 #include "table_array.hpp"
 
 namespace athena {
@@ -36,7 +36,7 @@ namespace ciphers {
 template <typename Alphabet, std::size_t N>
 struct caesar
 {
-  BOOST_STATIC_CONSTANT(std::size_t, value = N);
+  BOOST_STATIC_CONSTANT(std::size_t, n = N);
   BOOST_STATIC_CONSTANT(std::size_t, first = detail::first<Alphabet>::value);
   BOOST_STATIC_CONSTANT(std::size_t, last = detail::last<Alphabet>::value);
   BOOST_STATIC_CONSTANT(std::size_t, length = detail::length<Alphabet>::value);
@@ -69,8 +69,7 @@ struct caesar
       : caesar<Alphabet, n> {}; \
   /**/
 
-BOOST_PP_REPEAT_FROM_TO(
-    0,
+BOOST_PP_REPEAT(
     ATHENA_CIPHERS_ALPHABET_NUMBER,
     ATHENA_CIPHERS_CAESAR_ROT_TYPEDEF_PP_REPERAT_MACRO,
     ~)
