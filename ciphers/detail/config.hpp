@@ -11,9 +11,9 @@
 #ifndef ATHENA_CIPHERS_DETAIL_CONFIG_HPP
 #define ATHENA_CIPHERS_DETAIL_CONFIG_HPP
 
-#if !defined(ATHENA_CIPHERS_NO_USE_DEFAULT_ALPHABTE)
+#if !defined(ATHENA_CIPHERS_NO_USE_DEFAULT_ALPHABET)
 # include "../alphabet/english.hpp"
-#endif // defined(ATHENA_CIPHERS_NO_USE_DEFAULT_ALPHABTE)
+#endif // defined(ATHENA_CIPHERS_NO_USE_DEFAULT_ALPHABET)
 
 namespace athena {
 namespace ciphers {
