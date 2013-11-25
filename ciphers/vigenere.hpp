@@ -32,7 +32,6 @@
 #include "detail/first.hpp"
 #include "detail/last.hpp"
 #include "detail/length.hpp"
-#include "table_array.hpp"
 
 namespace athena {
 namespace ciphers {
@@ -68,9 +67,8 @@ struct vigenere
 
   typedef Alphabet alphabet_type;
   typedef String string_type;
-  template <std::size_t X, std::size_t Y> struct table
-    : vigenere_table<alphabet_type, X, Y> {};
-  typedef table_array<alphabet_type, vigenere_table> array_type;
+
+  static const typename string_type::value_type data[length + 1];
 
   vigenere(const string_type& keyword)
     : keyword_(keyword) {}
@@ -85,7 +83,7 @@ struct vigenere
     BOOST_ASSERT(key >= first && key <= last);
 
     if (c >= first && c <= last)
-      c = array_type::data[(c - first) + (key - first) * alphabet_number];
+      c = data[(c - first) + (key - first) * detail::length<Alphabet>::value];
 
     return c;
   }
@@ -109,7 +107,7 @@ struct vigenere
         if (++n >= ksize)
           n = 0;
 
-        c = array_type::data[(c - first) + (k - first) * alphabet_number];
+        c = data[(c - first) + (k - first) * detail::length<Alphabet>::value];
       }
     }
 
@@ -125,10 +123,10 @@ struct vigenere
     if (c >= first && c <= last)
     {
       typename string_type::const_pointer ptr =
-          &array_type::data[(key - first) * alphabet_number];
+          &data[(key - first) * detail::length<Alphabet>::value];
       std::size_t i = 0;
 
-      for (; i < alphabet_number; ++i)
+      for (; i < detail::length<Alphabet>::value; ++i)
         if (*ptr++ == c)
           break;
 
@@ -153,13 +151,13 @@ struct vigenere
       {
         typename string_type::const_reference& k = keyword_[n];
         typename string_type::const_pointer ptr =
-            &array_type::data[(k - first) * alphabet_number];
+            &data[(k - first) * detail::length<Alphabet>::value];
         std::size_t j = 0;
 
         if (++n >= ksize)
           n = 0;
 
-        for (j = 0; j < alphabet_number; ++j)
+        for (j = 0; j < detail::length<Alphabet>::value; ++j)
           if (*ptr++ == c)
             break;
 
@@ -172,6 +170,37 @@ struct vigenere
 private:
   string_type keyword_;
 };
+
+#define ATHENA_CIPHERS_VIGENERE_GET_SEQUENCE_PP_PEPEAT_MACRO(z, x, alphabet) \
+  BOOST_PP_REPEAT( \
+      ATHENA_CIPHERS_ALPHABET_NUMBER \
+    , ATHENA_CIPHERS_VIGENERE_GET_VALUE_PP_PEPEAT_MACRO \
+    , (alphabet, x) \
+    ) \
+  /**/
+
+#define ATHENA_CIPHERS_VIGENERE_GET_VALUE_PP_PEPEAT_MACRO(z, y, tuple2) \
+  vigenere_table< \
+      BOOST_PP_TUPLE_ELEM(2, 0, tuple2) BOOST_PP_COMMA() \
+      BOOST_PP_TUPLE_ELEM(2, 1, tuple2) BOOST_PP_COMMA() \
+      y \
+    >::value BOOST_PP_COMMA() \
+  /**/
+
+template <typename Alphabet, typename String>
+const typename vigenere<Alphabet, String>::string_type::value_type
+vigenere<Alphabet, String>::data[length + 1] =
+{
+  BOOST_PP_REPEAT(
+      ATHENA_CIPHERS_ALPHABET_NUMBER
+    , ATHENA_CIPHERS_VIGENERE_GET_SEQUENCE_PP_PEPEAT_MACRO
+    , Alphabet
+    )
+  '\0'
+};
+
+#undef ATHENA_CIPHERS_VIGENERE_GET_SEQUENCE_PP_PEPEAT_MACRO
+#undef ATHENA_CIPHERS_VIGENERE_GET_VALUE_PP_PEPEAT_MACRO
 
 } // namespace ciphers
 } // namespace athena

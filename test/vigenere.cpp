@@ -112,13 +112,13 @@ void vigenere_table_test()
       ATHENA_CIPHERS_ALPHABET_NUMBER,
       UNIT_TEST_VIGENERE_RUNTIME_SHOW_SEQUENCE_PP_PEPEAT_MACRO,
       uppercase)
-  std::cout << vigenere<uppercase>::array_type::data << std::endl;
+  std::cout << vigenere<uppercase>::data << std::endl;
 
   BOOST_PP_REPEAT(
       ATHENA_CIPHERS_ALPHABET_NUMBER,
       UNIT_TEST_VIGENERE_RUNTIME_SHOW_SEQUENCE_PP_PEPEAT_MACRO,
       lowercase)
-  std::cout << vigenere<lowercase>::array_type::data << std::endl;
+  std::cout << vigenere<lowercase>::data << std::endl;
 }
 
 void test()
@@ -152,7 +152,6 @@ void test()
 
   ATHENA_CIPHERS_CHECK(vu.decode(vu.encode(utext)) == "ATTACKATDAWN");
   ATHENA_CIPHERS_CHECK(vl.decode(vl.encode(ltext)) == "attackatdawn");
-
 }
 
 } // namespace vigenere_runtime

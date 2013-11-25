@@ -59,9 +59,11 @@ void test()
   using namespace athena::ciphers;
 
   BOOST_PP_REPEAT_FROM_TO(
-      0,
-      ATHENA_CIPHERS_ALPHABET_NUMBER,
-      UNIT_TEST_CAESAR_COMPILE_MACRO, ~)
+      0
+    , ATHENA_CIPHERS_ALPHABET_NUMBER
+    , UNIT_TEST_CAESAR_COMPILE_MACRO
+    , ~
+    )
 }
 
 } // namespace caesar_compile
@@ -101,7 +103,7 @@ namespace caesar_runtime {
 inline void
 show_string(const char* alphabet_name, const std::string& str)
 {
-  std::cout << str << std::endl;
+  std::cout << alphabet_name << ": " << str << std::endl;
 }
 
 void test()
@@ -113,9 +115,11 @@ void test()
   tmp.resize(str.size());
 
   BOOST_PP_REPEAT_FROM_TO(
-      0,
-      ATHENA_CIPHERS_ALPHABET_NUMBER,
-      UNIT_TEST_CAESAR_RUNTIME_MACRO, ~)
+      0
+    , ATHENA_CIPHERS_ALPHABET_NUMBER
+    , UNIT_TEST_CAESAR_RUNTIME_MACRO
+    , ~
+    )
 }
 
 } // namespace caesar_runtime
