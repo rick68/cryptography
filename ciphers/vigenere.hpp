@@ -22,9 +22,6 @@
 // Boost.Preprocessor
 #include <boost/preprocessor/punctuation/comma.hpp>
 
-// Boost.Utility
-#include <boost/assert.hpp>
-
 // Athena.Ciphers
 #include "detail/config.hpp"
 #include "detail/left_rotate.hpp"
@@ -70,39 +67,27 @@ struct vigenere
 
   static const typename string_type::value_type data[length + 1];
 
-  vigenere(const string_type& keyword)
-    : keyword_(keyword) {}
+  vigenere(const string_type& key)
+    : key_(key) {}
 
-  const string_type& keyword() const { return keyword_; }
-  string_type& keyword() { return keyword_; }
+  const string_type& key() const { return key_; }
+  string_type& key() { return key_; }
 
-  inline static typename string_type::value_type
-  encode(typename string_type::value_type c,
-         typename string_type::value_type key)
+  inline string_type& encrypt(string_type& plaintext) const
   {
-    BOOST_ASSERT(key >= first && key <= last);
+    const typename string_type::size_type& psize = plaintext.size();
+    const typename string_type::size_type& ksize = key_.size();
 
-    if (c >= first && c <= last)
-      c = data[(c - first) + (key - first) * detail::length<Alphabet>::value];
+    if (psize == 0)
+      return plaintext;
 
-    return c;
-  }
-
-  inline string_type& encode(string_type& text) const
-  {
-    const typename string_type::size_type& tsize = text.size();
-    const typename string_type::size_type& ksize = keyword_.size();
-
-    if (tsize == 0)
-      return text;
-
-    for (std::size_t i = 0, n = 0; i < tsize; ++i)
+    for (std::size_t i = 0, n = 0; i < psize; ++i)
     {
-      typename string_type::reference c = text[i];
+      typename string_type::reference c = plaintext[i];
 
       if (c >= first && c <= last)
       {
-        typename string_type::const_reference& k = keyword_[n];
+        typename string_type::const_reference& k = key_[n];
 
         if (++n >= ksize)
           n = 0;
@@ -111,45 +96,24 @@ struct vigenere
       }
     }
 
-    return text;
+    return plaintext;
   }
 
-  inline static typename string_type::value_type
-  decode(typename string_type::value_type c,
-         typename string_type::value_type key)
+  inline string_type& decipher(string_type& ciphertext) const
   {
-    BOOST_ASSERT(key >= first && key <= last);
+    const typename string_type::size_type& csize = ciphertext.size();
+    const typename string_type::size_type& ksize = key_.size();
 
-    if (c >= first && c <= last)
+    if (csize == 0)
+      return ciphertext;
+
+    for (std::size_t i = 0, n = 0; i < csize; ++i)
     {
-      typename string_type::const_pointer ptr =
-          &data[(key - first) * detail::length<Alphabet>::value];
-      std::size_t i = 0;
-
-      for (; i < detail::length<Alphabet>::value; ++i)
-        if (*ptr++ == c)
-          break;
-
-      c = first + i;
-    }
-
-    return c;
-  }
-
-  inline string_type& decode(string_type& text) const
-  {
-    const typename string_type::size_type& tsize = text.size();
-    const typename string_type::size_type& ksize = keyword_.size();
-
-    if (tsize == 0) return text;
-
-    for (std::size_t i = 0, n = 0; i < tsize; ++i)
-    {
-      typename string_type::reference c = text[i];
+      typename string_type::reference c = ciphertext[i];
 
       if (c >= first && c <= last)
       {
-        typename string_type::const_reference& k = keyword_[n];
+        typename string_type::const_reference& k = key_[n];
         typename string_type::const_pointer ptr =
             &data[(k - first) * detail::length<Alphabet>::value];
         std::size_t j = 0;
@@ -164,11 +128,11 @@ struct vigenere
         c = first + j;
       }
     }
-    return text;
+    return ciphertext;
   }
 
 private:
-  string_type keyword_;
+  string_type key_;
 };
 
 #define ATHENA_CIPHERS_VIGENERE_GET_SEQUENCE_PP_PEPEAT_MACRO(z, x, alphabet) \

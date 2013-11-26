@@ -78,24 +78,24 @@ void test()
 #define UNIT_TEST_CAESAR_RUNTIME_MACRO(z, n, text) \
   UNIT_TEST_CAESAR_TYPEDEF_MACRO_D(uppercase, n) \
   UNIT_TEST_CAESAR_TYPEDEF_MACRO_D(lowercase, n) \
-  UNIT_TEST_CAESAR_RUNTIME_ENCODE_MACRO(uppercase, n) \
-  UNIT_TEST_CAESAR_RUNTIME_DECODE_MACRO(uppercase, n) \
+  UNIT_TEST_CAESAR_RUNTIME_ENCRYPT_MACRO(uppercase, n) \
+  UNIT_TEST_CAESAR_RUNTIME_DECIPHER_MACRO(uppercase, n) \
   ATHENA_CIPHERS_CHECK(str == tmp); \
-  UNIT_TEST_CAESAR_RUNTIME_ENCODE_MACRO(lowercase, n) \
-  UNIT_TEST_CAESAR_RUNTIME_DECODE_MACRO(lowercase, n) \
+  UNIT_TEST_CAESAR_RUNTIME_ENCRYPT_MACRO(lowercase, n) \
+  UNIT_TEST_CAESAR_RUNTIME_DECIPHER_MACRO(lowercase, n) \
   ATHENA_CIPHERS_CHECK(str == tmp); \
   /**/
 
-#define UNIT_TEST_CAESAR_RUNTIME_ENCODE_MACRO(text, n) \
+#define UNIT_TEST_CAESAR_RUNTIME_ENCRYPT_MACRO(text, n) \
   for (std::size_t i = 0; i < str.size(); ++i) \
     tmp[i] = BOOST_PP_CAT \
-        (BOOST_PP_CAT(caesar, n), BOOST_PP_CAT(text, _t))::encode(str[i]); \
+        (BOOST_PP_CAT(caesar, n), BOOST_PP_CAT(text, _t))::encrypt(str[i]); \
   /**/
 
-#define UNIT_TEST_CAESAR_RUNTIME_DECODE_MACRO(text, n) \
+#define UNIT_TEST_CAESAR_RUNTIME_DECIPHER_MACRO(text, n) \
   for (std::size_t i = 0; i < str.size(); ++i) \
     tmp[i] = BOOST_PP_CAT \
-        (BOOST_PP_CAT(caesar, n), BOOST_PP_CAT(text, _t))::decode(tmp[i]); \
+        (BOOST_PP_CAT(caesar, n), BOOST_PP_CAT(text, _t))::decipher(tmp[i]); \
   /**/
 
 namespace caesar_runtime {

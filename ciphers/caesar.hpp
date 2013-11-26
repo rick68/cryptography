@@ -45,14 +45,14 @@ struct caesar
 
   static const char_type data[length + 1];
 
-  inline static char_type encode(char_type c)
+  inline static char_type encrypt(char_type c)
   {
     if (c >= first && c <= last)
       return data[c - first];
     return c;
   }
 
-  inline static char_type decode(char_type c)
+  inline static char_type decipher(char_type c)
   {
     if (c >= first && c <= last)
     {

@@ -133,8 +133,8 @@ void test()
   vu_t vu("HELLO");
   vl_t vl("world");
 
-  vu_t::string_type vu_kw = vu.keyword();
-  vl_t::string_type vl_kw = vl.keyword();
+  vu_t::string_type vu_kw = vu.key();
+  vl_t::string_type vl_kw = vl.key();
 
   ATHENA_CIPHERS_CHECK(vu_kw == "HELLO");
   ATHENA_CIPHERS_CHECK(vl_kw == "world");
@@ -142,16 +142,8 @@ void test()
   std::string utext = "ATTACKATDAWN";
   std::string ltext = "attackatdawn";
 
-  for (std::size_t i = 0, n = 0; i < utext.size(); ++i)
-  {
-    ATHENA_CIPHERS_CHECK
-        (vu.decode(vu.encode(utext[i], vu_kw[n]), vu_kw[n]) == utext[i]);
-    ATHENA_CIPHERS_CHECK
-        (vl.decode(vl.encode(ltext[i], vl_kw[n]), vl_kw[n]) == ltext[i]);
-  }
-
-  ATHENA_CIPHERS_CHECK(vu.decode(vu.encode(utext)) == "ATTACKATDAWN");
-  ATHENA_CIPHERS_CHECK(vl.decode(vl.encode(ltext)) == "attackatdawn");
+  ATHENA_CIPHERS_CHECK(vu.decipher(vu.encrypt(utext)) == "ATTACKATDAWN");
+  ATHENA_CIPHERS_CHECK(vl.decipher(vl.encrypt(ltext)) == "attackatdawn");
 }
 
 } // namespace vigenere_runtime
