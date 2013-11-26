@@ -70,8 +70,8 @@ struct vigenere
   vigenere(const string_type& key)
     : key_(key) {}
 
-  const string_type& key() const { return key_; }
-  string_type& key() { return key_; }
+  inline const string_type& get_key() const { return key_; }
+  inline void set_key(const string_type& key) { return key_ = key; }
 
   inline string_type& encrypt(string_type& plaintext) const
   {
