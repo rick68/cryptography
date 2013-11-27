@@ -22,6 +22,9 @@
 // Boost.Preprocessor
 #include <boost/preprocessor/punctuation/comma.hpp>
 
+// Boost.Utility
+#include <boost/assert.hpp>
+
 // Athena.Ciphers
 #include "detail/config.hpp"
 #include "detail/left_rotate.hpp"
@@ -73,17 +76,21 @@ struct vigenere
   inline const string_type& get_key() const { return key_; }
   inline void set_key(const string_type& key) { return key_ = key; }
 
-  inline string_type& encrypt(string_type& plaintext) const
+  inline bool encrypt(const string_type& plaintext, string_type& ciphertext) const
   {
     const typename string_type::size_type& psize = plaintext.size();
+
+    if (!psize)
+      return false;
+
     const typename string_type::size_type& ksize = key_.size();
 
-    if (psize == 0)
-      return plaintext;
+    BOOST_ASSERT(&plaintext != &ciphertext);
+    ciphertext.resize(0);
 
     for (std::size_t i = 0, n = 0; i < psize; ++i)
     {
-      typename string_type::reference c = plaintext[i];
+      typename string_type::const_reference c = plaintext[i];
 
       if (c >= first && c <= last)
       {
@@ -92,31 +99,45 @@ struct vigenere
         if (++n >= ksize)
           n = 0;
 
-        c = data[(c - first) + (k - first) * detail::length<Alphabet>::value];
+        ciphertext.append(
+            1
+          , data[
+                (c - first)
+              + (k - first)
+              * detail::length<Alphabet>::value
+              ]
+          );
       }
     }
 
-    return plaintext;
+    return true;
   }
 
-  inline string_type& decipher(string_type& ciphertext) const
+  inline bool encrypt(string_type& text) const
+    { return encrypt(string_type(text), text); }
+
+  inline bool decipher(const string_type& ciphertext, string_type& plaintext) const
   {
     const typename string_type::size_type& csize = ciphertext.size();
+
+    if (!csize)
+      return false;
+
+    BOOST_ASSERT(&ciphertext != &plaintext);
+    plaintext.resize(0);
+
     const typename string_type::size_type& ksize = key_.size();
+    typename string_type::const_pointer ptr = 0;
+    std::size_t i = 0, j = 0, n = 0;
 
-    if (csize == 0)
-      return ciphertext;
-
-    for (std::size_t i = 0, n = 0; i < csize; ++i)
+    for (i = 0, n = 0; i < csize; ++i)
     {
-      typename string_type::reference c = ciphertext[i];
+      typename string_type::const_reference c = ciphertext[i];
 
       if (c >= first && c <= last)
       {
         typename string_type::const_reference& k = key_[n];
-        typename string_type::const_pointer ptr =
-            &data[(k - first) * detail::length<Alphabet>::value];
-        std::size_t j = 0;
+        ptr = &data[(k - first) * detail::length<Alphabet>::value];
 
         if (++n >= ksize)
           n = 0;
@@ -124,13 +145,18 @@ struct vigenere
         for (j = 0; j < detail::length<Alphabet>::value; ++j)
           if (*ptr++ == c)
             break;
+        BOOST_ASSERT(j < detail::length<Alphabet>::value);
 
-        c = first + j;
+        plaintext.append(1, first + j);
       }
     }
-    return ciphertext;
+
+    return true;
   }
 
+  inline bool decipher(string_type& text) const
+    { return decipher(string_type(text), text); }
+ 
 private:
   string_type key_;
 };

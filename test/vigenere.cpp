@@ -133,17 +133,31 @@ void test()
   vu_t vu("HELLO");
   vl_t vl("world");
 
-  vu_t::string_type vu_kw = vu.key();
-  vl_t::string_type vl_kw = vl.key();
+  vu_t::string_type vu_kw = vu.get_key();
+  vl_t::string_type vl_kw = vl.get_key();
 
   ATHENA_CIPHERS_CHECK(vu_kw == "HELLO");
   ATHENA_CIPHERS_CHECK(vl_kw == "world");
 
   std::string utext = "ATTACKATDAWN";
   std::string ltext = "attackatdawn";
+  std::string result;
 
-  ATHENA_CIPHERS_CHECK(vu.decipher(vu.encrypt(utext)) == "ATTACKATDAWN");
-  ATHENA_CIPHERS_CHECK(vl.decipher(vl.encrypt(ltext)) == "attackatdawn");
+  ATHENA_CIPHERS_CHECK(vu.encrypt(utext, result));
+  ATHENA_CIPHERS_CHECK(vu.decipher(result));
+  ATHENA_CIPHERS_CHECK(result == utext);
+
+  ATHENA_CIPHERS_CHECK(vu.encrypt(result));
+  ATHENA_CIPHERS_CHECK(vu.decipher(std::string(result), result));
+  ATHENA_CIPHERS_CHECK(result == utext);
+
+  ATHENA_CIPHERS_CHECK(vl.encrypt(ltext, result));
+  ATHENA_CIPHERS_CHECK(vl.decipher(result));
+  ATHENA_CIPHERS_CHECK(result == ltext);
+
+  ATHENA_CIPHERS_CHECK(vl.encrypt(result));
+  ATHENA_CIPHERS_CHECK(vl.decipher(std::string(result), result));
+  ATHENA_CIPHERS_CHECK(result == ltext);
 }
 
 } // namespace vigenere_runtime
