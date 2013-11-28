@@ -210,7 +210,6 @@ struct adfgvx
       for (j = 0; j < ksize; ++j)
       {
         const typename string_type::size_type& n = transposition_[j].first;
-        BOOST_ASSERT(n < adfgvx_alphabet_length);
         text[i + n] = ciphertext[i + j];
       }
     }
