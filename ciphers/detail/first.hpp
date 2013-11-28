@@ -32,8 +32,9 @@ template <typename Sequence>
 struct first
 {
   BOOST_STATIC_CONSTANT(
-      char_type,
-      value = ATHENA_CIPHERS_DETAIL_RANDOM_ACCESS(Sequence, 0));
+      char_type
+    , value = ATHENA_CIPHERS_DETAIL_RANDOM_ACCESS(Sequence, 0)
+    );
 };
 
 } // detail

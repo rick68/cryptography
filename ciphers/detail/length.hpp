@@ -28,8 +28,9 @@ template <typename Sequence>
 struct length
 {
   BOOST_STATIC_CONSTANT(
-      std::size_t,
-      value = boost::mpl::size<Sequence>::value);
+      std::size_t
+    , value = boost::mpl::size<Sequence>::value
+    );
 };
 
 } // detail

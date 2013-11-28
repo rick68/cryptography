@@ -32,7 +32,6 @@
 #include "detail/first.hpp"
 #include "detail/last.hpp"
 #include "detail/length.hpp"
-#include "table_array.hpp"
 
 namespace athena {
 namespace ciphers {
@@ -52,13 +51,13 @@ struct vigenere_table
 };
 
 template <
-    typename Alphabet,
-    typename String = std::basic_string<
-        char_type,
-        std::char_traits<char_type>,
-        std::allocator<char_type>
-    >
->
+    typename Alphabet
+  , typename String = std::basic_string<
+        char_type
+      , std::char_traits<char_type>
+      , std::allocator<char_type>
+      >
+  >
 struct vigenere
 {
   BOOST_STATIC_CONSTANT(std::size_t, first = detail::first<Alphabet>::value);
@@ -68,110 +67,130 @@ struct vigenere
 
   typedef Alphabet alphabet_type;
   typedef String string_type;
-  template <std::size_t X, std::size_t Y> struct table
-    : vigenere_table<alphabet_type, X, Y> {};
-  typedef table_array<alphabet_type, vigenere_table> array_type;
 
-  vigenere(const string_type& keyword)
-    : keyword_(keyword) {}
+  static const typename string_type::value_type data[length + 1];
 
-  const string_type& keyword() const { return keyword_; }
-  string_type& keyword() { return keyword_; }
+  vigenere(const string_type& key)
+    : key_(key) {}
 
-  inline static typename string_type::value_type
-  encode(typename string_type::value_type c,
-         typename string_type::value_type key)
+  inline const string_type& get_key() const { return key_; }
+  inline void set_key(const string_type& key) { return key_ = key; }
+
+  inline bool encrypt(const string_type& plaintext, string_type& ciphertext) const
   {
-    BOOST_ASSERT(key >= first && key <= last);
+    const typename string_type::size_type& psize = plaintext.size();
 
-    if (c >= first && c <= last)
-      c = array_type::data[(c - first) + (key - first) * alphabet_number];
+    if (!psize)
+      return false;
 
-    return c;
-  }
+    const typename string_type::size_type& ksize = key_.size();
 
-  inline string_type& encode(string_type& text) const
-  {
-    const typename string_type::size_type& tsize = text.size();
-    const typename string_type::size_type& ksize = keyword_.size();
+    BOOST_ASSERT(&plaintext != &ciphertext);
+    ciphertext.resize(0);
 
-    if (tsize == 0)
-      return text;
-
-    for (std::size_t i = 0, n = 0; i < tsize; ++i)
+    for (std::size_t i = 0, n = 0; i < psize; ++i)
     {
-      typename string_type::reference c = text[i];
+      typename string_type::const_reference c = plaintext[i];
 
       if (c >= first && c <= last)
       {
-        typename string_type::const_reference& k = keyword_[n];
+        typename string_type::const_reference& k = key_[n];
 
         if (++n >= ksize)
           n = 0;
 
-        c = array_type::data[(c - first) + (k - first) * alphabet_number];
+        ciphertext.append(
+            1
+          , data[
+                (c - first)
+              + (k - first)
+              * detail::length<Alphabet>::value
+              ]
+          );
       }
     }
 
-    return text;
+    return true;
   }
 
-  inline static typename string_type::value_type
-  decode(typename string_type::value_type c,
-         typename string_type::value_type key)
+  inline bool encrypt(string_type& text) const
+    { return encrypt(string_type(text), text); }
+
+  inline bool decipher(const string_type& ciphertext, string_type& plaintext) const
   {
-    BOOST_ASSERT(key >= first && key <= last);
+    const typename string_type::size_type& csize = ciphertext.size();
 
-    if (c >= first && c <= last)
+    if (!csize)
+      return false;
+
+    BOOST_ASSERT(&ciphertext != &plaintext);
+    plaintext.resize(0);
+
+    const typename string_type::size_type& ksize = key_.size();
+    typename string_type::const_pointer ptr = 0;
+    std::size_t i = 0, j = 0, n = 0;
+
+    for (i = 0, n = 0; i < csize; ++i)
     {
-      typename string_type::const_pointer ptr =
-          &array_type::data[(key - first) * alphabet_number];
-      std::size_t i = 0;
-
-      for (; i < alphabet_number; ++i)
-        if (*ptr++ == c)
-          break;
-
-      c = first + i;
-    }
-
-    return c;
-  }
-
-  inline string_type& decode(string_type& text) const
-  {
-    const typename string_type::size_type& tsize = text.size();
-    const typename string_type::size_type& ksize = keyword_.size();
-
-    if (tsize == 0) return text;
-
-    for (std::size_t i = 0, n = 0; i < tsize; ++i)
-    {
-      typename string_type::reference c = text[i];
+      typename string_type::const_reference c = ciphertext[i];
 
       if (c >= first && c <= last)
       {
-        typename string_type::const_reference& k = keyword_[n];
-        typename string_type::const_pointer ptr =
-            &array_type::data[(k - first) * alphabet_number];
-        std::size_t j = 0;
+        typename string_type::const_reference& k = key_[n];
+        ptr = &data[(k - first) * detail::length<Alphabet>::value];
 
         if (++n >= ksize)
           n = 0;
 
-        for (j = 0; j < alphabet_number; ++j)
+        for (j = 0; j < detail::length<Alphabet>::value; ++j)
           if (*ptr++ == c)
             break;
+        BOOST_ASSERT(j < detail::length<Alphabet>::value);
 
-        c = first + j;
+        plaintext.append(1, first + j);
       }
     }
-    return text;
+
+    return true;
   }
 
+  inline bool decipher(string_type& text) const
+    { return decipher(string_type(text), text); }
+ 
 private:
-  string_type keyword_;
+  string_type key_;
 };
+
+#define ATHENA_CIPHERS_VIGENERE_GET_SEQUENCE_PP_PEPEAT_MACRO(z, x, alphabet) \
+  BOOST_PP_REPEAT( \
+      ATHENA_CIPHERS_ALPHABET_NUMBER \
+    , ATHENA_CIPHERS_VIGENERE_GET_VALUE_PP_PEPEAT_MACRO \
+    , (alphabet, x) \
+    ) \
+  /**/
+
+#define ATHENA_CIPHERS_VIGENERE_GET_VALUE_PP_PEPEAT_MACRO(z, y, tuple2) \
+  vigenere_table< \
+      BOOST_PP_TUPLE_ELEM(2, 0, tuple2) BOOST_PP_COMMA() \
+      BOOST_PP_TUPLE_ELEM(2, 1, tuple2) BOOST_PP_COMMA() \
+      y \
+    >::value BOOST_PP_COMMA() \
+  /**/
+
+template <typename Alphabet, typename String>
+const typename vigenere<Alphabet, String>::string_type::value_type
+vigenere<Alphabet, String>::data[length + 1] =
+{
+  BOOST_PP_REPEAT(
+      ATHENA_CIPHERS_ALPHABET_NUMBER
+    , ATHENA_CIPHERS_VIGENERE_GET_SEQUENCE_PP_PEPEAT_MACRO
+    , Alphabet
+    )
+  '\0'
+};
+
+#undef ATHENA_CIPHERS_VIGENERE_GET_SEQUENCE_PP_PEPEAT_MACRO
+#undef ATHENA_CIPHERS_VIGENERE_GET_VALUE_PP_PEPEAT_MACRO
 
 } // namespace ciphers
 } // namespace athena

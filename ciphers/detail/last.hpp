@@ -32,10 +32,12 @@ template <typename Sequence>
 struct last
 {
   BOOST_STATIC_CONSTANT(
-      char_type,
-      value = ATHENA_CIPHERS_DETAIL_RANDOM_ACCESS(
-          Sequence,
-          BOOST_PP_DEC(ATHENA_CIPHERS_ALPHABET_NUMBER)));
+      char_type
+    , value = ATHENA_CIPHERS_DETAIL_RANDOM_ACCESS(
+          Sequence
+        , BOOST_PP_DEC(ATHENA_CIPHERS_ALPHABET_NUMBER)
+        )
+    );
 };
 
 } // detail

@@ -112,13 +112,13 @@ void vigenere_table_test()
       ATHENA_CIPHERS_ALPHABET_NUMBER,
       UNIT_TEST_VIGENERE_RUNTIME_SHOW_SEQUENCE_PP_PEPEAT_MACRO,
       uppercase)
-  std::cout << vigenere<uppercase>::array_type::data << std::endl;
+  std::cout << vigenere<uppercase>::data << std::endl;
 
   BOOST_PP_REPEAT(
       ATHENA_CIPHERS_ALPHABET_NUMBER,
       UNIT_TEST_VIGENERE_RUNTIME_SHOW_SEQUENCE_PP_PEPEAT_MACRO,
       lowercase)
-  std::cout << vigenere<lowercase>::array_type::data << std::endl;
+  std::cout << vigenere<lowercase>::data << std::endl;
 }
 
 void test()
@@ -133,26 +133,31 @@ void test()
   vu_t vu("HELLO");
   vl_t vl("world");
 
-  vu_t::string_type vu_kw = vu.keyword();
-  vl_t::string_type vl_kw = vl.keyword();
+  vu_t::string_type vu_kw = vu.get_key();
+  vl_t::string_type vl_kw = vl.get_key();
 
   ATHENA_CIPHERS_CHECK(vu_kw == "HELLO");
   ATHENA_CIPHERS_CHECK(vl_kw == "world");
 
   std::string utext = "ATTACKATDAWN";
   std::string ltext = "attackatdawn";
+  std::string result;
 
-  for (std::size_t i = 0, n = 0; i < utext.size(); ++i)
-  {
-    ATHENA_CIPHERS_CHECK
-        (vu.decode(vu.encode(utext[i], vu_kw[n]), vu_kw[n]) == utext[i]);
-    ATHENA_CIPHERS_CHECK
-        (vl.decode(vl.encode(ltext[i], vl_kw[n]), vl_kw[n]) == ltext[i]);
-  }
+  ATHENA_CIPHERS_CHECK(vu.encrypt(utext, result));
+  ATHENA_CIPHERS_CHECK(vu.decipher(result));
+  ATHENA_CIPHERS_CHECK(result == utext);
 
-  ATHENA_CIPHERS_CHECK(vu.decode(vu.encode(utext)) == "ATTACKATDAWN");
-  ATHENA_CIPHERS_CHECK(vl.decode(vl.encode(ltext)) == "attackatdawn");
+  ATHENA_CIPHERS_CHECK(vu.encrypt(result));
+  ATHENA_CIPHERS_CHECK(vu.decipher(std::string(result), result));
+  ATHENA_CIPHERS_CHECK(result == utext);
 
+  ATHENA_CIPHERS_CHECK(vl.encrypt(ltext, result));
+  ATHENA_CIPHERS_CHECK(vl.decipher(result));
+  ATHENA_CIPHERS_CHECK(result == ltext);
+
+  ATHENA_CIPHERS_CHECK(vl.encrypt(result));
+  ATHENA_CIPHERS_CHECK(vl.decipher(std::string(result), result));
+  ATHENA_CIPHERS_CHECK(result == ltext);
 }
 
 } // namespace vigenere_runtime
